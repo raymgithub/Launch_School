@@ -5,4 +5,14 @@ GET second array of numbers
 Merge first array with second array
 Second Array should be added to first array at the odd index without removing any elements in the first array
 
-test
+START
+GET first_array
+GET second_array
+
+while first_array is not empty
+  push first_array elements to second_array starting at index [1]
+  increase index count by 2 then add the next element until first_array is empty
+end
+   
+
+END
