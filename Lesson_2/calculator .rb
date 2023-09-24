@@ -1,5 +1,5 @@
 def prompt(message)
-  kernal.puts("=>#{message}")
+  Kernel.puts("=>#{message}")
 end
 
 
