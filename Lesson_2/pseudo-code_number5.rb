@@ -4,3 +4,5 @@ GET first array numbers
 GET second array of numbers
 Merge first array with second array
 Second Array should be added to first array at the odd index without removing any elements in the first array
+
+test
