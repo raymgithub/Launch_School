@@ -1,10 +1,15 @@
- loop do
+def prompt(message)
+  kernal.puts("=>#{message}")
+end
+
+
+loop do
   loop do
-    puts "Enter your first number"
+    prompt("Enter your first number")
     n1 = gets.chomp
-    puts "Enter your second number"
+    prompt("Enter your second number")
     n2 = gets.chomp
-    puts "What do you want to do? 1.)Add 2.)Subtract 3.)Multiply 4.)Divide"
+    prompt("What do you want to do? 1.)Add 2.)Subtract 3.)Multiply 4.)Divide")
     action = gets.chomp.to_s.upcase
 
     if action == "ADD" ||  action == "1"
@@ -16,11 +21,11 @@
     elsif action == "DIVIDE" || action == "4"
       result = n1.to_f / n2.to_f  
     else 
-      puts "Invalid action! Try again!"
+      prompt("Invalid action! Try again!")
       break
     end
       
-    puts "The result is #{result}"
+    prompt("The result is #{result}")
     return
   end
 end
