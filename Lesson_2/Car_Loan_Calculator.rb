@@ -16,6 +16,9 @@ def monthly_payment(amount, duration)
   amount.to_f / duration.to_i
 end
 
+def monthly_apr(amount, apr, duration)
+  (amount.to_f * apr.to_f) / duration.to_i
+end
 
 puts "Please enter the total amount of the loan"
 total_amount = gets.chomp
@@ -24,5 +27,13 @@ total_duration = gets.chomp
 puts "Please enter the APR that was locked in."
 total_apr = gets.chomp  
 
-puts monthly_payment(total_amount, total_duration)
+monthly_payment(total_amount, total_duration)
+monthly_apr(total_amount, total_apr, total_duration)
+
+
+message = <<MSG
+  Here is your results
+  Total monthly payment: #{monthly_payment}
+  Total monthly apr: #{monthly_apr}
+MSG
 
