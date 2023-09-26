@@ -7,33 +7,17 @@ Find the total amount of the loan
         -Find the total per month payment for the duration that the loan is active for
           -Add the monthly APR payment to the total per month  
 =end
-total_amount = ''
-total_apr = ''
-total_duration = ''
-
-
-def monthly_payment(amount, duration)
-  amount.to_f / duration.to_i
-end
-
-def monthly_apr(amount, apr, duration)
-  (amount.to_f * apr.to_f) / duration.to_i
-end
 
 puts "Please enter the total amount of the loan"
-total_amount = gets.chomp
+total_loan = gets.chomp.to_f
 puts "Please enter the total duration of the loan in months"
-total_duration = gets.chomp
+total_duration = gets.chomp.to_f
 puts "Please enter the APR that was locked in."
-total_apr = gets.chomp  
+total_apr = gets.chomp.to_f
 
-monthly_payment(total_amount, total_duration)
-monthly_apr(total_amount, total_apr, total_duration)
+apr_payment = ((total_apr / 100) / 12)
 
+monthly_payment = total_loan * (apr_payment / (1 - (1 + apr_payment)**(-total_duration)))
 
-message = <<MSG
-  Here is your results
-  Total monthly payment: #{monthly_payment}
-  Total monthly apr: #{monthly_apr}
-MSG
+puts "Your monthly payment is #{monthly_payment}
 
