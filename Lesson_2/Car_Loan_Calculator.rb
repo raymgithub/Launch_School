@@ -19,5 +19,5 @@ apr_payment = ((total_apr / 100) / 12)
 
 monthly_payment = total_loan * (apr_payment / (1 - (1 + apr_payment)**(-total_duration)))
 
-puts "Your monthly payment is #{monthly_payment}
+puts "Your monthly payment is #{monthly_payment}"
 
