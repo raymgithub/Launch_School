@@ -54,7 +54,7 @@ monthly_payment = total_loan.to_i * (apr_payment.to_f / (1 - (1 + apr_payment.to
 
 
 message = <<-MSG
-  The infomation you entered are 
+  The infomation you entered are:
   Loan amount = $#{total_loan}
   Duration of Loan in months = #{total_duration} months
   Locked APR in percertage = %#{total_apr}
