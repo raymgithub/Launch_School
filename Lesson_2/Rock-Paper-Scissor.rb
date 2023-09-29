@@ -21,7 +21,9 @@ def prompt_Rock_Paper_Scissor
   puts prompt
 end
 
-RPS_option = <<MSG
+
+
+RPS_prompt = <<MSG
 Please choose one
 1)Rock
 2)Paper
@@ -37,5 +39,26 @@ name = gets.chomp
 puts "Hi #{name}!, lets play some rock, paper, scissor!"
 puts "-------------------------------------------------"
 puts " "
-puts RPS_option
+puts RPS_prompt
 choice = gets.chomp
+
+
+
+
+if RPS_array == choice 
+  puts "The computer choice #{RPS_array} and you chose #{choice} making it a tie!"
+elsif 
+  RPS_array ==  "Rock" && choice == "Paper" 
+  puts "The computer choice #{RPS_array} and you chose #{choice} making you the winner!"
+elsif 
+  RPS_array ==  "Paper" && choice == "Rock" 
+  puts "The computer choice #{RPS_array} and you chose #{choice} making you the loser."
+elsif 
+  RPS_array ==  "Paper" && choice == "Scissor" 
+  puts "The computer choice #{RPS_array} and you chose #{choice} making you the winner!"
+elsif 
+  RPS_array ==  "Scissor" && choice == "Paper" 
+  puts "The computer choice #{RPS_array} and you chose #{choice} making you the loser."
+
+
+#Notice that, while I can continue working on my code, there will be a bunch of lines. Going to start watching the assignment video now. My inexperience-self was going to do a bunch of if/else.
