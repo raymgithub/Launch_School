@@ -1,3 +1,4 @@
+=begin
 Provide three choices for user
   -Rock, Paper, Scissor
     -Rock will win against Scissor
@@ -13,4 +14,4 @@ Ask user for a choice
         -Ask user if they want to play again
           -If yes, play again
           -If no, exit the program
-          
+=end
