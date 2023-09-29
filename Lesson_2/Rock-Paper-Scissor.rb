@@ -15,3 +15,27 @@ Ask user for a choice
           -If yes, play again
           -If no, exit the program
 =end
+
+def prompt_Rock_Paper_Scissor
+  prompt = "Rock, Paper, Scissor"
+  puts prompt
+end
+
+RPS_option = <<MSG
+Please choose one
+1)Rock
+2)Paper
+3)Scissor
+MSG
+
+
+RPS_array = ["Rock", "Paper", "Scissor"].sample
+
+puts "Welcome to the game Rock, Paper, Scissor!"
+puts "What is your name?"
+name = gets.chomp
+puts "Hi #{name}!, lets play some rock, paper, scissor!"
+puts "-------------------------------------------------"
+puts " "
+puts RPS_option
+choice = gets.chomp
