@@ -1,23 +1,35 @@
-VALID_CHOICES = ['rock', 'paper', 'scissors']
+VALID_CHOICES = %w(rock paper scissors lizard spock)
 
 def prompt(message)
   puts("=> #{message}")
 end
 
+def win?(first, second)
+  (first == 'rock' && second == 'scissors') ||
+  (first == 'rock' && second == 'lizard') ||
+  (first == 'paper' && second == 'rock') ||
+  (first == 'paper' && second == 'spock') ||
+  (first == 'scissors' && second == 'paper') || 
+  (first == 'scissors' && second == 'lizard') ||
+  (first == 'lizard' && second == 'spock') ||
+  (first == 'lizard' && second == 'paper') ||
+  (first == 'spock' && second == 'scissors') ||
+  (first == 'spock' && second == 'rock')
+end
+
 def display_results(player, computer)
-  if (player == 'rock' && computer == 'scissors') ||
-    (player == 'paper' && computer == 'rock') ||
-    (player == 'scissors' && computer == 'paper')
+  if win?(player, computer)
     prompt("You won!")
-  elsif (player == 'rock' && computer == 'paper') ||
-    (player == 'paper' && computer == 'scissors') ||
-    (player == 'scissors' && computer == 'rock')
+  elsif win?(computer, player)
     prompt("The computer won :(")
   else 
     prompt("It is a tie!")
   end
 end
 
+def prompt(message)
+  puts("=> #{message}")
+end
 
 loop do
 
@@ -47,3 +59,4 @@ loop do
 end
 
 prompt("Thank you for playing!")
+
