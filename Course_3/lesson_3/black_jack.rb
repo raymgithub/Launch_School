@@ -1,4 +1,3 @@
-require 'pry'
 def prompt(msg)
   puts "#{msg}"
 end
