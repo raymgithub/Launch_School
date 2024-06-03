@@ -3,23 +3,23 @@ def prompt(msg)
   puts "#{msg}"
 end
 
-def new_deck
-  deck_of_cards = {}
+def new_shuffled_deck
+  deck_of_cards = []
   card_suits = ["Heart", "Diamond", "Spade", "Club"]
+  card_num = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
 
   card_suits.each do |suit|
-    deck_of_cards[suit] = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
+    card_num.each do |num|
+      deck_of_cards << [suit, num]
+    end
   end
 
-  deck_of_cards
+deck_of_cards.shuffle
 end
 
+
 def grab_card!(deck)
-  suit = deck.to_a.sample
-  number_card = suit[1].sample
-  suit = suit[0]
-  deck[suit].delete(number_card)
-  [suit, number_card]
+deck.pop
 end
 
 def total_hand_sum(hand)
@@ -217,7 +217,7 @@ loop do # New Scoreboard
   scoreboard = { Dealer: 0, Player: 0 }
   
   loop do # New Deck, New Dealer hand, New Player Hand
-    deck = new_deck
+    deck = new_shuffled_deck
     dealer = []
     player = []
 
