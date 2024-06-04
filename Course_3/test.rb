@@ -1,21 +1,26 @@
-def show_table(scoreboard, dealer, player)
-  system "clear"
-  puts "Dealer score is #{scoreboard[:Dealer]} | Player score is #{scoreboard[:Player]}"
-  puts "The first player to #{NUMBER_TO_WIN} wins."
-  puts "-----------------------------------"
-  puts ""
-  dealer.size == 2 ? puts "Dealer first card is #{dealer[0].join(' ')}." | puts "Dealer hand is #{card_is(dealer)}."
-  puts "The total sum of dealer's hand is #{total_hand_sum(dealer)}"
-  puts ""
-  puts ""
-  puts "Your hand is #{card_is(player)}."
-  puts "The total sum of your hand is #{total_hand_sum(player)}"
-  puts ""
-  puts ""
-  puts "-----------------------------------"
+require 'pry'
+
+def new_shuffled_deck
+  deck_of_cards = []
+  card_suits = ["Heart", "Diamond", "Spade", "Club"]
+  card_num = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
+
+  card_suits.each do |suit|
+    card_num.each do |num|
+      deck_of_cards << [suit, num]
+    end
+  end
+
+deck_of_cards.shuffle
 end
 
-  puts "Dealer first card is #{dealer[0].join(' ')}."
 
 
-  dealer.size == 2 ? puts "Dealer first card is #{dealer[0].join(' ')}." | puts "Dealer hand is #{card_is(dealer)}."
+def grab_card!(deck)
+deck.pop
+end
+
+deck = new_shuffled_deck
+card = grab_card!(deck)
+
+p card
