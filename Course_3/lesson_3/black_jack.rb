@@ -1,5 +1,5 @@
 def prompt(msg)
-  puts "#{msg}"
+  puts msg
 end
 
 def new_shuffled_deck
@@ -13,12 +13,11 @@ def new_shuffled_deck
     end
   end
 
-deck_of_cards.shuffle
+  deck_of_cards.shuffle
 end
 
-
 def grab_card!(deck)
-deck.pop
+  deck.pop
 end
 
 def total_hand_sum(hand)
@@ -36,7 +35,7 @@ def total_hand_sum(hand)
   sum
 end
 
-def card_is(card)
+def format_to_phrase(card)
   card.map do |suit, number|
     "#{number} of #{suit}"
   end.join(', ')
@@ -66,7 +65,7 @@ def bust?(hand)
 end
 
 def grab_first_hand(deck, dealer, player)
-  num, remainder = NUMBER_TO_WIN.divmod(10)
+  num, _remainder = NUMBER_TO_WIN.divmod(10)
 
   num.times do
     card = grab_card!(deck)
@@ -77,22 +76,22 @@ def grab_first_hand(deck, dealer, player)
 end
 
 def show_table(scoreboard, dealer, player)
-  which_string = player.size == 2 ? "Dealer first card is #{dealer[0].join(' ')}." : "Dealer hand is #{card_is(dealer)}."
+  which_string = player.size == 2 ? "Dealer first card is #{dealer[0].join(' ')}." : "Dealer hand is #{format_to_phrase(dealer)}."
 
   system "clear"
   puts "Dealer score is #{scoreboard[:Dealer]} | Player score is #{scoreboard[:Player]}"
-  puts "The first hand total sum to #{NUMBER_TO_WIN} wins."
-  puts "-----------------------------------"
+  puts "The first hand to reach the total sum of #{NUMBER_TO_WIN} wins"
+  puts "----------------------------------------------------------------------"
   puts ""
   puts which_string
   puts "The total sum of dealer's hand is #{total_hand_sum(dealer)}"
   puts ""
   puts ""
-  puts "Your hand is #{card_is(player)}."
+  puts "Your hand is #{format_to_phrase(player)}."
   puts "The total sum of your hand is #{total_hand_sum(player)}"
   puts ""
   puts ""
-  puts "-----------------------------------"
+  puts "----------------------------------------------------------------------"
 end
 
 def win?(scoreboard, dealer, player)
@@ -201,11 +200,11 @@ def scoreboard_win?(scoreboard)
   if scoreboard[:Player] == SCORE_TO_WIN
     system "clear"
     puts "You reached #{SCORE_TO_WIN} first! Making you a winner!"
-    return true
+    true
   elsif scoreboard[:Dealer] == SCORE_TO_WIN
     system "clear"
     puts "Dealer reached #{SCORE_TO_WIN} first. You lost."
-    return true
+    true
   end
 end
 
@@ -214,7 +213,7 @@ SCORE_TO_WIN = 5
 
 loop do # New Scoreboard
   scoreboard = { Dealer: 0, Player: 0 }
-  
+
   loop do # New Deck, New Dealer hand, New Player Hand
     deck = new_shuffled_deck
     dealer = []
