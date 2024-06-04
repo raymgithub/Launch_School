@@ -236,12 +236,12 @@ loop do # New Scoreboard
 
       who_won?(scoreboard, dealer, player)
       break
-    end # Game End
+    end # Game end
     puts "Press any key to continue"
     key = gets
     break if scoreboard_win?(scoreboard)
-  end # End New Deck..
+  end # New Deck.. end
 
   choice = play_again?
   break unless choice == "yes" || choice == "y"
-end # End New Scoreboard
+end # New Scoreboard end
