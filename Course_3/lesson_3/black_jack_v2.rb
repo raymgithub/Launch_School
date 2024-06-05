@@ -66,13 +66,15 @@ def bust?(hand)
   total_hand_sum(hand) > TOTAL_SUM_TO_WIN
 end
 
-def grab_first_hand(deck, dealer, player)
+def give_first_two_cards!(deck, dealer, player)
   num = TOTAL_SUM_TO_WIN.divmod(10)[0]
 
   num.times do
     dealer << grab_card!(deck)
     player << grab_card!(deck)
   end
+end
+
 end
 
 def hidden_or_not(dealer, player)
@@ -131,7 +133,7 @@ def dealer_bj_phr
   "Dealer has Black Jack. You lost."
 end
 
-def win?(scoreboard, dealer, player)
+def black_jack?(scoreboard, dealer, player)
   phrase_to_output = total_to_win?(player) ? player_bj_phr : dealer_bj_phr
 
   if total_to_win?(player) || total_to_win?(dealer)
@@ -151,7 +153,7 @@ def dealer_bust_phr
   "Dealer has busted. You won!"
 end
 
-def any_bust?(scoreboard, dealer, player)
+def someone_bust?(scoreboard, dealer, player)
   phrase_to_output = bust?(player) ? player_bust_phr : dealer_bust_phr
 
   if bust?(player) || bust?(dealer)
@@ -231,7 +233,7 @@ def player_hand_greater(scoreboard, dealer, player)
   puts "You won!"
 end
 
-def who_won?(scoreboard, dealer, player)
+def who_won(scoreboard, dealer, player)
   dealer_sum = total_hand_sum(dealer)
   player_sum = total_hand_sum(player)
 
@@ -263,3 +265,29 @@ def scoreboard_win?(scoreboard)
     true
   end
 end
+
+scoreboard = { Player: 0, Dealer: 0 }
+
+active_deck = new_shuffled_deck
+player_hand = []
+dealer_hand = []
+  
+  give_first_two_cards!(active_deck, dealer_hand, player_hand)
+  show_table(active_deck, dealer_hand, player_hand)
+  black_jack?(scoreboard, dealer_hand, player_hand)
+
+  choice = hit_or_stand(scoreboard, dealer, player)
+  player_turn!(scoreboard, deck, dealer, player) if choice == "h" || choice == "hit"
+  black_jack?(scoreboard, dealer_hand, player_hand)
+
+  dealer_turn!(scoreboard, deck, dealer, player)
+  black_jack?(scoreboard, dealer, player)
+  someone_bust?(scoreboard, dealer, player)
+
+  who_won(scoreboard, dealer_hand, player_hand)
+
+  puts "Press enter to continue..."
+
+  scoreboard_win?(scoreboard)
+  choice = play_again?
+  break unless choice == "yes" || choice == "y"
