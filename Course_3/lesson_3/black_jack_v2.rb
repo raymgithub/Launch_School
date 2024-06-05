@@ -75,8 +75,8 @@ def grab_first_hand(deck, dealer, player)
   end
 end
 
-def show_table(scoreboard, dealer, player)
-  hidden_hand = "Dealer first card is #{dealer[0].join(' of ')}.
+def hidden_or_not(dealer, player)
+    hidden_hand = "Dealer first card is #{dealer[0].join(' of ')}.
   "
 
   whole_hand = <<HEREDOC
@@ -84,12 +84,15 @@ def show_table(scoreboard, dealer, player)
   The total sum of dealer's hand is #{total_hand_sum(dealer)}
 HEREDOC
 
-  which_phrase = if player.size == 2
-                  hidden_hand
-                 else
-                  whole_hand
-                 end
+  if player.size == 2
+    hidden_hand
+  else
+    whole_hand
+  end
+end
 
+def show_table(scoreboard, dealer, player)
+  phrase = hidden_or_not(dealer, player)
 
   system "clear"
   puts <<HEREDOC
@@ -97,7 +100,7 @@ HEREDOC
   The first hand to reach the total sum of #{TOTAL_SUM_TO_WIN} wins
   ----------------------------------------------------------------------
   
-  #{which_phrase}
+  #{phrase}
 
   
   
