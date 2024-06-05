@@ -110,20 +110,26 @@ HEREDOC
 end
 
 def add_to_score(scoreboard, who)
-  who = if who == "Player"
+  who = case who
+        when "Player"
           :Player
-        else
+        when "Dealer"
           :Dealer
         end
 
   scoreboard[who] += 1
 end
 
+def player_bj_phr
+  "You have Black Jack! You won!"
+end
+
+def dealer_bj_phr
+  "Dealer has Black Jack. You lost."
+end
 
 def win?(scoreboard, dealer, player)
-  player_phrase = "You have Black Jack! You won!"
-  dealer_phrase = "Dealer has Black Jack. You lost."
-  phrase_to_output = total_to_win?(player) ? player_phrase : dealer_phrase
+  phrase_to_output = total_to_win?(player) ? player_bj_phr : dealer_bj_phr
 
   if total_to_win?(player) || total_to_win?(dealer)
     system "clear"
@@ -134,11 +140,16 @@ def win?(scoreboard, dealer, player)
   end
 end
 
-def any_bust?(scoreboard, dealer, player)
-  player_phrase = "You busted. Dealer wins"
-  dealer_phrase = "Dealer has busted. You won!"
+def player_bust_phr
+  "You busted. Dealer wins"
+end
 
-  phrase_to_output = bust?(player) ? player_phrase : dealer_phrase
+def dealer_bust_phr
+  "Dealer has busted. You won!"
+end
+
+def any_bust?(scoreboard, dealer, player)
+  phrase_to_output = bust?(player) ? player_bust_phr : dealer_bust_phr
 
   if bust?(player) || bust?(dealer)
     system "clear"
@@ -230,13 +241,18 @@ def who_won?(scoreboard, dealer, player)
   end
 end
 
-def scoreboard_win?(scoreboard)
-  player_phrase = "You reached #{SCORE_COUNT_TO_WIN} first! Making you a winner!"
-  dealer_phrase = "Dealer reached #{SCORE_COUNT_TO_WIN} first. You lost."
+def player_win_sb_phr
+  "You reached #{SCORE_COUNT_TO_WIN} first! Making you a winner!"
+end
 
+def dealer_win_sb_phr
+  "Dealer reached #{SCORE_COUNT_TO_WIN} first. You lost."
+end
+
+def scoreboard_win?(scoreboard)
   player_win? = scoreboard[:Player] == SCORE_COUNT_TO_WIN ? true : false
 
-  phrase_to_output = player_win? ? player_phrase : dealer_phrase
+  phrase_to_output = player_win? ? player_win_sb_phr : dealer_win_sb_phr
   
   if scoreboard[:Player] == SCORE_COUNT_TO_WIN || scoreboard[:Dealer] == SCORE_COUNT_TO_WIN
     system "clear"
