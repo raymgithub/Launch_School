@@ -1,3 +1,6 @@
+TOTAL_SUM_TO_WIN = 21
+SCORE_COUNT_TO_WIN = 5
+
 def prompt(msg)
   puts msg
 end
@@ -27,7 +30,7 @@ def total_hand_sum(hand)
            when 'Jack', 'Queen', 'King'
              10
            when "Ace"
-             sum + 11 <= NUMBER_TO_WIN ? 11 : 1
+             sum + 11 <= TOTAL_SUM_TO_WIN ? 11 : 1
            else
              number
            end
@@ -41,93 +44,113 @@ def format_to_phrase(card)
   end.join(', ')
 end
 
-def deal_to_dealer?(deck, hand)
-  to = NUMBER_TO_WIN - 5
+def deal_to_dealer(deck, hand)
+  to = TOTAL_SUM_TO_WIN - 5
 
-  card = grab_card!(deck)
-  if (2..to).include?(total_hand_sum(hand))
-    hand << card
+  if (4..to).include?(total_hand_sum(hand))
+    hand << grab_card!(deck)
   end
 end
 
 def dealer_stand?(hand)
-  to = NUMBER_TO_WIN - 1
+  to = TOTAL_SUM_TO_WIN - 1
   from = to - 3
   (from..to).include?(total_hand_sum(hand))
 end
 
-def num_to_win(hand)
-  total_hand_sum(hand) == NUMBER_TO_WIN
+def total_to_win?(hand)
+  total_hand_sum(hand) == TOTAL_SUM_TO_WIN
 end
 
 def bust?(hand)
-  total_hand_sum(hand) > NUMBER_TO_WIN
+  total_hand_sum(hand) > TOTAL_SUM_TO_WIN
 end
 
 def grab_first_hand(deck, dealer, player)
-  num, _remainder = NUMBER_TO_WIN.divmod(10)
+  num = TOTAL_SUM_TO_WIN.divmod(10)[0]
 
   num.times do
-    card = grab_card!(deck)
-    dealer << card
-    card = grab_card!(deck)
-    player << card
+    dealer << grab_card!(deck)
+    player << grab_card!(deck)
   end
 end
 
 def show_table(scoreboard, dealer, player)
-  which_string = player.size == 2 ? "Dealer first card is #{dealer[0].join(' ')}." : "Dealer hand is #{format_to_phrase(dealer)}."
+  hidden_hand = "Dealer first card is #{dealer[0].join(' of ')}.
+  "
+
+  whole_hand = <<HEREDOC
+  Dealer hand is #{format_to_phrase(dealer)}.
+  The total sum of dealer's hand is #{total_hand_sum(dealer)}
+HEREDOC
+
+  which_phrase = if player.size == 2
+                  hidden_hand
+                 else
+                  whole_hand
+                 end
+
 
   system "clear"
-  puts "Dealer score is #{scoreboard[:Dealer]} | Player score is #{scoreboard[:Player]}"
-  puts "The first hand to reach the total sum of #{NUMBER_TO_WIN} wins"
-  puts "----------------------------------------------------------------------"
-  puts ""
-  puts which_string
-  puts "The total sum of dealer's hand is #{total_hand_sum(dealer)}"
-  puts ""
-  puts ""
-  puts "Your hand is #{format_to_phrase(player)}."
-  puts "The total sum of your hand is #{total_hand_sum(player)}"
-  puts ""
-  puts ""
-  puts "----------------------------------------------------------------------"
+  puts <<HEREDOC
+  Dealer score is #{scoreboard[:Dealer]} | Player score is #{scoreboard[:Player]}
+  The first hand to reach the total sum of #{TOTAL_SUM_TO_WIN} wins
+  ----------------------------------------------------------------------
+  
+  #{which_phrase}
+
+  
+  
+  Your hand is #{format_to_phrase(player)}.
+  The total sum of your hand is #{total_hand_sum(player)}
+  
+  
+  ----------------------------------------------------------------------
+HEREDOC
 end
 
+def add_to_score(scoreboard, who)
+  who = if who == "Player"
+          :Player
+        else
+          :Dealer
+        end
+
+  scoreboard[who] += 1
+end
+
+
 def win?(scoreboard, dealer, player)
-  if num_to_win(player)
+  player_phrase = "You have Black Jack! You won!"
+  dealer_phrase = "Dealer has Black Jack. You lost."
+  phrase_to_output = total_to_win?(player) ? player_phrase : dealer_phrase
+
+  if total_to_win?(player) || total_to_win?(dealer)
     system "clear"
-    scoreboard[:Player] += 1
+    total_to_win?(player) ? add_to_score(scoreboard, "Player") : add_to_score(scoreboard, "Dealer")
     show_table(scoreboard, dealer, player)
-    puts "You have Black Jack! You won!"
-    true
-  elsif num_to_win(dealer)
-    system "clear"
-    scoreboard[:Dealer] += 1
-    show_table(scoreboard, dealer, player)
-    puts "Dealer has Black Jack. You lost."
+    puts phrase_to_output
     true
   end
 end
 
 def any_bust?(scoreboard, dealer, player)
-  if bust?(player)
+  player_phrase = "You busted. Dealer wins"
+  dealer_phrase = "Dealer has busted. You won!"
+
+  phrase_to_output = bust?(player) ? player_phrase : dealer_phrase
+
+  if bust?(player) || bust?(dealer)
     system "clear"
-    scoreboard[:Dealer] += 1
+    bust?(player) ? add_to_score(scoreboard, "Dealer") : add_to_score(scoreboard, "Player")
     show_table(scoreboard, dealer, player)
-    puts "You busted. Dealer wins"
-    true
-  elsif bust?(dealer)
-    system "clear"
-    scoreboard[:Player] += 1
-    show_table(scoreboard, dealer, player)
-    puts "Dealer has busted. You won!"
+    puts phrase_to_output
     true
   end
 end
 
 def hit_or_stand(scoreboard, dealer, player)
-  loop do # show_table method
+  loop do
     prompt "Do you want to (H)it or (S)tand?"
     choice = gets.chomp.downcase
     if ["hit", "h", "stand", "s"].include?(choice)
@@ -156,10 +179,9 @@ end
 def player_turn!(scoreboard, deck, dealer, hand)
   loop do
     system "clear"
-    card = grab_card!(deck)
-    hand << card
+    hand << grab_card!(deck)
     show_table(scoreboard, dealer, hand)
-    break if num_to_win(hand)
+    break if total_to_win?(hand)
     break if bust?(hand)
 
     choice = hit_or_stand(scoreboard, dealer, hand)
@@ -170,12 +192,29 @@ end
 def dealer_turn!(scoreboard, deck, hand, player)
   loop do
     system "clear"
-    if deal_to_dealer?(deck, hand)
+    if deal_to_dealer(deck, hand)
       show_table(scoreboard, hand, player)
-    elsif dealer_stand?(hand) || bust?(hand) || num_to_win(hand)
+    elsif dealer_stand?(hand) || bust?(hand) || total_to_win?(hand)
       break
     end
   end
+end
+
+def draw_game(scoreboard, dealer, player)
+  show_table(scoreboard, dealer, player)
+  puts "It is a draw"
+end
+
+def dealer_hand_greater(scoreboard, dealer, player)
+  show_table(scoreboard, dealer, player)
+  add_to_score(scoreboard, "Dealer")
+  puts "Dealer Won."
+end
+
+def player_hand_greater(scoreboard, dealer, player)
+  show_table(scoreboard, dealer, player)
+  add_to_score(scoreboard, "Player")
+  puts "You won!"
 end
 
 def who_won?(scoreboard, dealer, player)
@@ -183,30 +222,25 @@ def who_won?(scoreboard, dealer, player)
   player_sum = total_hand_sum(player)
 
   if dealer_sum == player_sum
-    show_table(scoreboard, dealer, player)
-    puts "It is a draw."
+    draw_game
   elsif dealer_sum > player_sum
-    scoreboard[:Dealer] += 1
-    show_table(scoreboard, dealer, player)
-    puts "Dealer won."
+    dealer_hand_greater
   elsif dealer_sum < player_sum
-    scoreboard[:Player] += 1
-    show_table(scoreboard, dealer, player)
-    puts "You won!"
+    player_hand_greater
   end
 end
 
 def scoreboard_win?(scoreboard)
-  if scoreboard[:Player] == SCORE_TO_WIN
+  player_phrase = "You reached #{SCORE_COUNT_TO_WIN} first! Making you a winner!"
+  dealer_phrase = "Dealer reached #{SCORE_COUNT_TO_WIN} first. You lost."
+
+  player_win? = scoreboard[:Player] == SCORE_COUNT_TO_WIN ? true : false
+
+  phrase_to_output = player_win? ? player_phrase : dealer_phrase
+  
+  if scoreboard[:Player] == SCORE_COUNT_TO_WIN || scoreboard[:Dealer] == SCORE_COUNT_TO_WIN
     system "clear"
-    puts "You reached #{SCORE_TO_WIN} first! Making you a winner!"
-    true
-  elsif scoreboard[:Dealer] == SCORE_TO_WIN
-    system "clear"
-    puts "Dealer reached #{SCORE_TO_WIN} first. You lost."
+    puts phrase_to_output
     true
   end
 end
-
-NUMBER_TO_WIN = 21
-SCORE_TO_WIN = 5
